@@ -47,9 +47,14 @@ d2 <- unlist(d1)
 
 
 # Find words with 1 or 2 hyphens
-s1 <- str_extract_all(df1$abstract, "[A-Za-z]+-[0-9]|[A-Za-z][0-9]+-[A-Za-z]|[A-Za-z0-9]+-[A-Za-z0-9]+-[A-Za-z0-9]")
+# s1 <- str_extract_all(df1$abstract, "[A-Za-z]+-[0-9]|[A-Za-z][0-9]+-[A-Za-z]|[A-Za-z0-9]+-[A-Za-z0-9]+-[A-Za-z0-9]")
+
+# test_str <- c('state-of-the-art','human-to-human', 's-3')
+
+s1 <- str_extract_all(df1$abstract, '([:alnum:]+-[:alnum:]+-[:alnum:]+-[:alnum:]+|[:alnum:]+-[:alnum:]+-[:alnum:]+|[:alnum:]+-[:alnum:]+)')
 s2 <- unlist(s1)
-s3 <- as.character(unique(s2))
+s3 <- as.character(unique(tolower(s2)));length(s3)
+s4 <- s3[str_detect(s3, '\\d')];length(s4)
 
 # c1 <- c('123-abg','fds-324','23-3g-6s')
 
@@ -61,7 +66,7 @@ s3 <- as.character(unique(s2))
 # dt1$flag_col <- str_detect(dt1$abstract, s3[1])
 
 # Create data.frame to collect results
-dat1 <- data.frame(term = as.character(s3), paper_cnt = NA, total_cnt = NA, stringsAsFactors = F)
+dat1 <- data.frame(term = as.character(s4), paper_cnt = NA, total_cnt = NA, stringsAsFactors = F)
 # Put data into data.table structure
 df2 <- data.table(df1)
 
@@ -81,9 +86,18 @@ for(i in 1:length(dat1$term)){ # i = 1
 }
 
 
+# df1[grepl('cell-to-c ',df1$abstract, ignore.case = T),'abstract'][1]
 
+dat2 <- dat1[dat1$paper_cnt > 1,]
+dat2 <- dat2[order(-dat2$paper_cnt),]
+dat2$virus_flag <- str_detect(dat2$term, 'virus|mers|sars')
+dat2$zene_flag <- str_detect(dat2$term, 'zene')
+dat2$ase_flag <- str_detect(dat2$term, 'ase')
+summary(dat2)
 
-# dat2 <- dat1  
+outfile1 <- "C:\\Users\\sargo\\Desktop\\kaggle\\covid19\\output\\20200416_hyphenated_words_v1.csv"
+# write.csv(dat2, outfile1, row.names = F)
+
 
 # dat2 <- dat2[order(-dat2$paper_cnt),]
 
