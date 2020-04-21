@@ -93,10 +93,37 @@ dat2 <- dat2[order(-dat2$paper_cnt),]
 dat2$virus_flag <- str_detect(dat2$term, 'virus|mers|sars')
 dat2$zene_flag <- str_detect(dat2$term, 'zene')
 dat2$ase_flag <- str_detect(dat2$term, 'ase')
+dat2$flu_flag <- str_detect(dat2$term, 'flu')
+dat2$fluo_flag <- str_detect(dat2$term, 'fluo')
+
+#-------------------------------------------------------
+
+dat3 <- data.table(dat2[,c('term','paper_cnt','total_cnt')])
+
+g1 <- expand.grid(col1 = letters, col2 = letters, col3 = letters)
+g1$pat <- paste(g1$col1, g1$col2, g1$col3, sep = '')
+dim(g1)
+
+head(g1)
+
+
+
+
+
+#-------------------------------------------------------
+
+
+
+
 summary(dat2)
 
 outfile1 <- "C:\\Users\\sargo\\Desktop\\kaggle\\covid19\\output\\20200416_hyphenated_words_v1.csv"
 # write.csv(dat2, outfile1, row.names = F)
+
+
+
+#------------------------------
+
 
 
 # dat2 <- dat2[order(-dat2$paper_cnt),]
