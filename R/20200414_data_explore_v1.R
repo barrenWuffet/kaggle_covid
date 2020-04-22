@@ -98,10 +98,43 @@ dat2$fluo_flag <- str_detect(dat2$term, 'fluo')
 
 #-------------------------------------------------------
 
+# create list of terms to compare with letter combinations
 dat3 <- data.table(dat2[,c('term','paper_cnt','total_cnt')])
 
+# create df with 3 letter combos to compare
 g1 <- expand.grid(col1 = letters, col2 = letters, col3 = letters)
 g1$pat <- paste(g1$col1, g1$col2, g1$col3, sep = '')
+g1$occur_cnt <- NA
+
+# loop thru terms and find how many times each letter pattern occurs in the terms
+for(i in 1:length(g1$pat)){ # i = 1
+    term1 <- g1$pat[i]
+    # term1 <- 'leu'
+    # dat3[(stringr::str_detect( dat3$term, regex(term1, ignore_case = T ))),]
+    g1[i,'occur_cnt'] <-sum(stringr::str_detect( dat3$term, regex(term1, ignore_case = T )))
+    # dat3$flag_col <- stringr::str_detect( dat3$term, regex(term1, ignore_case = T ))
+    if(i %% 1000 == 0){print(i);flush.console()}
+}
+
+# look at top occuring patterns
+g2 <- g1[order(-g1$occur_cnt),]
+
+
+# for(i in 1:length(dat1$term)){ # i = 1
+#   term1 <- dat1$term[i]
+#   df2$flag_col <- stringr::str_detect( df2$abstract, regex(term1, ignore_case = T ))
+#   paper_sum <- sum(df2$flag_col)
+#   dat1[i,'paper_cnt'] <- paper_sum
+#   if(paper_sum > 1){
+#     df2$cnt_col <- stringr::str_count(df2$abstract, regex(term1, ignore_case = T ))
+#     dat1[i,'total_cnt'] <- sum(df2$cnt_col)
+#   }
+#   if(i %% 1000 == 0){print(i);flush.console()}
+# }
+
+
+
+
 dim(g1)
 
 head(g1)
